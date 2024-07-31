@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "EarlyDarkEmu"
+  site-url: "https://nesar.github.io/EarlyDarkEmu"
+  description: "Emulator for Early Dark Energy Cosmological summary statistics"
+  repo-branch: main
+  repo-url: "https://github.com/nesar/EarlyDarkEmu"
