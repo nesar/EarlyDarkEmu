@@ -55,22 +55,6 @@ def load_npy_pk_k_z(Pk_fileIn:str=LIBRARY_PK_FILE, # Input file for Pk
 if True: 
     Pk_all, k_all, z_all = load_npy_pk_k_z(LIBRARY_PK_FILE, LIBRARY_K_FILE, LIBRARY_Z_FILE)
 
-# %% ../nbs/00_load.ipynb 16
-if True:
-
-    print(np.where(Pk_all == np.max(Pk_all)))
-
-    remove_sim_indx = [3]
-    valid_indices = [i for i in  np.arange(Pk_all.shape[0])  if i not in remove_sim_indx]
-
-    Pk_all_clean = Pk_all[valid_indices]
-
-
-    plt.plot(_k_base, Pk_all[remove_sim_indx, 49, :].T, 'k');
-    plt.plot(_k_base, Pk_all[valid_indices, 49, :].T, 'r', alpha=0.4);
-    plt.xscale('log')
-    # plt.yscale('log')
-
 # %% ../nbs/00_load.ipynb 19
 def load_params(p_fileIn:str=LIBRARY_PARAM_FILE, # Input file for parameters
                ) -> np.array: # Parameters
