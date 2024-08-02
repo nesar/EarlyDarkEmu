@@ -6,4 +6,4 @@ include EarlyDarkEmu/data/
 include EarlyDarkEmu/data/pkg_data
 include EarlyDarkEmu/model/
 recursive-exclude * __pycache__
-recursive-exclude * dat
+recursive-exclude *dat

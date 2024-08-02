@@ -1,8 +1,0 @@
-# List of input/precision parameters passed
-# but not used (just for info)
-#
-*  It is therefore mostly suited for n > = 2			   *
-*  with n = 1 							   *
-compute_sigma8 = yes
-spectra_verbose = 1
-nonlinear_verbose = 1
