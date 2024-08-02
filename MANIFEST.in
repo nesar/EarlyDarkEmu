@@ -2,4 +2,8 @@ include settings.ini
 include LICENSE
 include CONTRIBUTING.md
 include README.md
+include EarlyDarkEmu/data/
+include EarlyDarkEmu/data/pkg_data
+include EarlyDarkEmu/model/
 recursive-exclude * __pycache__
+recursive-exclude * dat
