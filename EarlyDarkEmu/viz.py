@@ -31,7 +31,8 @@ def plot_lines_with_param_color(param_array:np.array=None, # parameter array
                                 xlabel_str:str=None, # x-label string
                                 ylabel_str:str=None, # y-label string
                                 param_name_str:str=None, # Parameter string,
-                                ax: plt.Axes = None
+                                ax: plt.Axes = None,
+                                y_log_plot_scale:bool=False
                                ):
     
     
@@ -52,7 +53,7 @@ def plot_lines_with_param_color(param_array:np.array=None, # parameter array
 
     # plt.plot(stellar_mass_test, gsmf_um_test, 'k.', label='UM z=0.00')
     ax.set_xscale('log')
-    ax.set_yscale('log')
+    if y_log_plot_scale: ax.set_yscale('log')
     # plt.axhline(y=0, linestyle='dashed', color='black')
     # plt.yscale('log')
     # plt.xlim(4e9, )
@@ -113,7 +114,8 @@ def sensitivity_plot(k_all:np.array=None, # all wavenumbers
                      sepia_model:SepiaModel=None, # SEPIA emulator model
                      emulator_function=None, # function which takes in sepia model and parameters
                      param_name:tuple=None, # Parameter name
-                     xy_lims:np.array=[1e-5, 2e5, 1, 1e4] 
+                     xy_lims:np.array=[1e-5, 2e5, 1, 1e4],
+                     y_log_plot_scale:bool=False 
                     ):
 
     color_by_index = 0
@@ -155,7 +157,7 @@ def sensitivity_plot(k_all:np.array=None, # all wavenumbers
 
                     # ax[paramNo].set_yscale('log')
                     ax[paramNo].set_xscale('log')
-                    ax[paramNo].set_yscale('log')
+                    if y_log_plot_scale: ax[paramNo].set_yscale('log')
                     ax[paramNo].set_ylabel('P(k)', fontsize=18)
                     ax[paramNo].set_yticks([], minor = True)
                     
@@ -189,7 +191,8 @@ def validation_plot(k_all:np.array=None,
                     target_vals:np.array=None, 
                     pred_mean:np.array=None, 
                     pred_quant:np.array=None, 
-                    xy_lims:np.array=[2e-2, 1e1, 0.98, 1.3]
+                    xy_lims:np.array=[2e-2, 1e1, 0.98, 1.3],
+                    y_log_plot_scale:bool=False
                     ):
     
     delta_y_lims = [-0.101, 0.101]
@@ -209,7 +212,7 @@ def validation_plot(k_all:np.array=None,
         a[0].plot(k_all, pred_mean[:, one_index], c=colors[one_index], ls=styles[1])
         # a[0].plot(k_all, pred_quant[:, one_index, 0], c=colors[one_index], ls=styles[2])
 
-        # a[0].fill_between(k_all, pred_quant[:, one_index, 0], pred_quant[:, one_index, 1], color=colors[one_index], alpha=0.2) 
+        a[0].fill_between(k_all, pred_quant[:, one_index, 0], pred_quant[:, one_index, 1], color=colors[one_index], alpha=0.2) 
         #'Emulated (0.05, 0.95) quantile'
 
 
@@ -235,7 +238,7 @@ def validation_plot(k_all:np.array=None,
     a[1].set_ylabel(r'$\delta P(k)/P(k)$')
     a[0].set_ylabel(r'$P(k) [(Mpc/h)^3]$')
     a[0].set_xscale('log')
-    a[0].set_yscale('log')
+    if y_log_plot_scale: a[0].set_yscale('log')
     # plt.show()
     a[0].set_xlim(xy_lims[0], xy_lims[1])
     a[0].set_ylim(xy_lims[2], xy_lims[3])

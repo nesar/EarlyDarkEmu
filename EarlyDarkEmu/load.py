@@ -8,6 +8,8 @@ __all__ = ['DATA_DIR', 'LIBRARY_PARAM_FILE', 'LIBRARY_PK_FILE', 'LIBRARY_K_FILE'
 import numpy as np
 import pkg_resources
 from sepia.SepiaData import SepiaData
+import matplotlib.pylab as plt
+
 
 # %% ../nbs/00_load.ipynb 5
 DATA_DIR = "data/pkg_data/"
@@ -24,28 +26,59 @@ PARAM_NAME = [r"$\Omega_m$", r"h", r"$\sigma_8$", r"$\log(z_c)$", r"$f_{ede}$", 
 # LIBRARY_PARAM_FILE_VAL = pkg_resources.resource_stream("EarlyDarkEmu", DATA_DIR + "cosmo_validation.txt").name
 
 
+# %% ../nbs/00_load.ipynb 10
+_k_base = np.logspace(-5,  0, 210)
+print(_k_base.shape)
+
 # %% ../nbs/00_load.ipynb 12
 def load_npy_pk_k_z(Pk_fileIn:str=LIBRARY_PK_FILE, # Input file for Pk
                      k_fileIn:str=LIBRARY_K_FILE,  # Input file for k
                      z_fileIn:str=LIBRARY_Z_FILE, # Input file for z
+                     pk_log_scale:bool=True, #log10 scaling for P(k)
                      ) -> tuple:#Three n-D arrays for P(k), k and z
 
 
-    Pk_all = np.load(Pk_fileIn, allow_pickle=True)
+    # Pk_all = np.load(Pk_fileIn, allow_pickle=True, encoding='latin1')
+    Pk_all = np.load(Pk_fileIn)
     k_all = np.load(k_fileIn)
     z_all = np.load(z_fileIn)
+
+    Pk_all = np.reshape(Pk_all, newshape=(-1, z_all.shape[0], k_all.shape[0]))
+    
+    if pk_log_scale: 
+        Pk_all = np.log10(Pk_all)        
 
     return Pk_all, k_all, z_all
 
 
-# %% ../nbs/00_load.ipynb 17
+# %% ../nbs/00_load.ipynb 13
+if True: 
+    Pk_all, k_all, z_all = load_npy_pk_k_z(LIBRARY_PK_FILE, LIBRARY_K_FILE, LIBRARY_Z_FILE)
+
+# %% ../nbs/00_load.ipynb 16
+if True:
+
+    print(np.where(Pk_all == np.max(Pk_all)))
+
+    remove_sim_indx = [3]
+    valid_indices = [i for i in  np.arange(Pk_all.shape[0])  if i not in remove_sim_indx]
+
+    Pk_all_clean = Pk_all[valid_indices]
+
+
+    plt.plot(_k_base, Pk_all[remove_sim_indx, 49, :].T, 'k');
+    plt.plot(_k_base, Pk_all[valid_indices, 49, :].T, 'r', alpha=0.4);
+    plt.xscale('log')
+    # plt.yscale('log')
+
+# %% ../nbs/00_load.ipynb 19
 def load_params(p_fileIn:str=LIBRARY_PARAM_FILE, # Input file for parameters
                ) -> np.array: # Parameters
     p_all = np.loadtxt(p_fileIn)
     # p_all[:, 2] = p_all[:, 2]/1e-9  # A_s rescaling
     return p_all[:, 1:]
 
-# %% ../nbs/00_load.ipynb 19
+# %% ../nbs/00_load.ipynb 21
 def sepia_data_format(design:np.array=None, # Params array of shape (num_simulation, num_params)
                      y_vals:np.array=None, # Shape (num_simulation, num_y_values)
                      y_ind:np.array=None # Shape (num_y_values,)
