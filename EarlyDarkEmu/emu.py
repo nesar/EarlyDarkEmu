@@ -19,12 +19,24 @@ import os
 
 # %% ../nbs/03_emu.ipynb 4
 def blockPrint():
-    sys._jupyter_stdout = sys.stdout
-    sys.stdout = open(os.devnull, 'w')
+    if 'ipykernel' in sys.modules:
+        # Running in Jupyter notebook
+        sys._jupyter_stdout = sys.stdout
+        sys.stdout = open(os.devnull, 'w')
+    else:
+        # Running in a regular Python script
+        sys._original_stdout = sys.stdout
+        sys.stdout = open(os.devnull, 'w')
 
 def enablePrint():
-    sys._jupyter_stdout = sys.stdout
-    sys.stdout = sys.__stdout__
+    if 'ipykernel' in sys.modules:
+        # Running in Jupyter notebook
+        sys.stdout.close()
+        sys.stdout = sys._jupyter_stdout
+    else:
+        # Running in a regular Python script
+        sys.stdout.close()
+        sys.stdout = sys._original_stdout
 
 # %% ../nbs/03_emu.ipynb 5
 def emulate(sepia_model:SepiaModel=None, # Input data in SEPIA format

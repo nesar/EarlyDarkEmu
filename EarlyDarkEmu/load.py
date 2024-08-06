@@ -43,7 +43,7 @@ def load_npy_pk_k_z(Pk_fileIn:str=LIBRARY_PK_FILE, # Input file for Pk
     k_all = np.load(k_fileIn)
     z_all = np.load(z_fileIn)
 
-    Pk_all = np.reshape(Pk_all, newshape=(-1, z_all.shape[0], k_all.shape[0]))
+    # Pk_all = np.reshape(Pk_all, newshape=(-1, z_all.shape[0], k_all.shape[0]))
     
     if pk_log_scale: 
         Pk_all = np.log10(Pk_all)        
