@@ -19,7 +19,7 @@ LIBRARY_K_FILE = pkg_resources.resource_stream("EarlyDarkEmu", DATA_DIR + "k_all
 LIBRARY_Z_FILE = pkg_resources.resource_stream("EarlyDarkEmu", DATA_DIR + "z_all.npy").name
 
 
-PARAM_NAME = [r"$\Omega_m$", r"h", r"$\sigma_8$", r"$\log(z_c)$", r"$f_{ede}$", r"$\theta_i$", r"$\Omega_{CDM}$"]
+PARAM_NAME = [r"$\omega_m$", r"h", r"$\sigma_8$", r"$\log(z_c)$", r"$f_{ede}$", r"$\theta_i$"]
 
 # LIBRARY_ZK_FILE_VAL = pkg_resources.resource_stream("EarlyDarkEmu", DATA_DIR + "z_k_validation.txt").name
 # LIBRARY_BK_FILE_VAL = pkg_resources.resource_stream("EarlyDarkEmu", DATA_DIR + "Boost_validation.npy").name
@@ -55,14 +55,14 @@ def load_npy_pk_k_z(Pk_fileIn:str=LIBRARY_PK_FILE, # Input file for Pk
 if True: 
     Pk_all, k_all, z_all = load_npy_pk_k_z(LIBRARY_PK_FILE, LIBRARY_K_FILE, LIBRARY_Z_FILE)
 
-# %% ../nbs/00_load.ipynb 19
+# %% ../nbs/00_load.ipynb 18
 def load_params(p_fileIn:str=LIBRARY_PARAM_FILE, # Input file for parameters
                ) -> np.array: # Parameters
     p_all = np.loadtxt(p_fileIn)
-    # p_all[:, 2] = p_all[:, 2]/1e-9  # A_s rescaling
-    return p_all[:, 1:]
 
-# %% ../nbs/00_load.ipynb 21
+    return p_all[:, 1:-1]
+
+# %% ../nbs/00_load.ipynb 20
 def sepia_data_format(design:np.array=None, # Params array of shape (num_simulation, num_params)
                      y_vals:np.array=None, # Shape (num_simulation, num_y_values)
                      y_ind:np.array=None # Shape (num_y_values,)
