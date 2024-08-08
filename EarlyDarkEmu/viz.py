@@ -195,7 +195,7 @@ def validation_plot(k_all:np.array=None,
                     y_log_plot_scale:bool=False
                     ):
     
-    delta_y_lims = [-0.101, 0.101]
+    delta_y_lims = [-0.0401, 0.0401]
 
     f, a = plt.subplots(2, 1, figsize=(8, 6), gridspec_kw={'height_ratios': [2, 1]}, sharex=True)
     plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=None, hspace=0.05)
