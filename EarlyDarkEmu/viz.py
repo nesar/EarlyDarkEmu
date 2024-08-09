@@ -200,7 +200,7 @@ def validation_plot(k_all:np.array=None,
     f, a = plt.subplots(2, 1, figsize=(8, 6), gridspec_kw={'height_ratios': [2, 1]}, sharex=True)
     plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=None, hspace=0.05)
 
-    colors = ['b', 'r', 'g', 'y', 'cyan', 'magenta']
+    colors = ['b', 'lightgreen', 'g', 'orange', 'cyan', 'r']
     colors = colors[0: pred_mean.shape[1]]
     styles = ['-', '--']
     styles_label = ['Sim', 'Emulated mean']
@@ -219,7 +219,7 @@ def validation_plot(k_all:np.array=None,
         a[1].plot(k_all, (pred_mean[:, one_index]/target_vals[one_index]) - 1, c=colors[one_index])
 
     for cc, col in enumerate(colors):
-        a[0].plot(np.NaN, np.NaN, c=colors[cc], label='Cosmology: ' + str(cc))
+        a[0].plot(np.NaN, np.NaN, c=colors[cc], label='T' + str(cc + 1))
 
     ax2 = a[0].twinx()
     for ss, sty in enumerate(styles):
@@ -232,7 +232,7 @@ def validation_plot(k_all:np.array=None,
     # a[1].fill_between(k_all, delta_y_lims[0], delta_y_lims[1], where=(k_all > 1.2), color='k', alpha=0.15)
 
 
-    a[0].legend(loc=1, title='Test configuration')
+    a[0].legend(loc=2, title='Test cosmologies', ncol=2)
     ax2.legend(loc=3)
     a[1].set_xlabel('k[h/Mpc]')
     a[1].set_ylabel(r'$\delta P(k)/P(k)$')
