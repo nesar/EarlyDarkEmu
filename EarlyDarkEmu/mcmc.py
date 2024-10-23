@@ -43,7 +43,7 @@ def ln_like(theta,
     model_grid, model_var_grid = emu_redshift(new_params, sepia_model_list, z_all)
         
     model = np.interp(x, x_grid, model_grid[:, 0])
-    model_var = np.interp(x, x_grid, model_var_grid[:, 0, 0])
+    # model_var = np.interp(x, x_grid, model_var_grid[:, 0, 0])
   
     # sigma2 = yerr**2  + model_var
     sigma2 = yerr**2 

@@ -57,7 +57,8 @@ def emulate(sepia_model:SepiaModel=None, # Input data in SEPIA format
     pred_samps = pred.get_y()
     
     pred_mean = np.mean(pred_samps, axis=0).T
-    pred_err = np.quantile(pred_samps, [0.05, 0.95], axis=0).T
+    # pred_quant = np.quantile(pred_samps, [0.05, 0.95], axis=0).T
+    pred_err = np.std(pred_samps, axis=0).T
     
     return pred_mean, pred_err
 

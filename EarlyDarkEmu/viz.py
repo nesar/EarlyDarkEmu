@@ -190,7 +190,7 @@ def sensitivity_plot(k_all:np.array=None, # all wavenumbers
 def validation_plot(k_all:np.array=None, 
                     target_vals:np.array=None, 
                     pred_mean:np.array=None, 
-                    pred_quant:np.array=None, 
+                    pred_std:np.array=None, 
                     xy_lims:np.array=[2e-2, 1e1, 0.98, 1.3],
                     y_log_plot_scale:bool=False
                     ):
@@ -212,7 +212,10 @@ def validation_plot(k_all:np.array=None,
         a[0].plot(k_all, pred_mean[:, one_index], c=colors[one_index], ls=styles[1])
         # a[0].plot(k_all, pred_quant[:, one_index, 0], c=colors[one_index], ls=styles[2])
 
-        a[0].fill_between(k_all, pred_quant[:, one_index, 0], pred_quant[:, one_index, 1], color=colors[one_index], alpha=0.2) 
+        # a[0].fill_between(k_all, pred_quant[:, one_index, 0], pred_quant[:, one_index, 1], color=colors[one_index], alpha=0.2) 
+        a[0].fill_between(k_all, pred_mean[:, one_index] - pred_std[:, one_index], pred_mean[:, one_index] + pred_std[:, one_index], 
+                          color=colors[one_index], alpha=0.2) 
+
         #'Emulated (0.05, 0.95) quantile'
 
 
