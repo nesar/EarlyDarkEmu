@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="GP emulator for power spectra in Early Dark Energy model">
+
+<title>EarlyDarkEmu</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="EarlyDarkEmu">
+<meta property="og:description" content="GP emulator for power spectra in Early Dark Energy model">
+<meta property="og:site_name" content="EarlyDarkEmu">
+<meta name="twitter:title" content="EarlyDarkEmu">
+<meta name="twitter:description" content="GP emulator for power spectra in Early Dark Energy model">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">EarlyDarkEmu</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">EarlyDarkEmu</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">EarlyDarkEmu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./load.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">load</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">pca</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">gp</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./emu.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">emu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mcmc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">mcmc</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./viz.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">viz</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#install" id="toc-install" class="nav-link active" data-scroll-target="#install">Install</a></li>
+  <li><a href="#basic-rundown" id="toc-basic-rundown" class="nav-link" data-scroll-target="#basic-rundown">Basic rundown</a>
+  <ul class="collapse">
+  <li><a href="#a-few-imports" id="toc-a-few-imports" class="nav-link" data-scroll-target="#a-few-imports">A few imports</a></li>
+  <li><a href="#loading-files" id="toc-loading-files" class="nav-link" data-scroll-target="#loading-files">Loading files</a></li>
+  <li><a href="#a-few-plotting-routines" id="toc-a-few-plotting-routines" class="nav-link" data-scroll-target="#a-few-plotting-routines">A few plotting routines</a></li>
+  <li><a href="#training-involves-pca-gp-fitting." id="toc-training-involves-pca-gp-fitting." class="nav-link" data-scroll-target="#training-involves-pca-gp-fitting.">Training involves: PCA, GP fitting.</a></li>
+  <li><a href="#load-existing-model" id="toc-load-existing-model" class="nav-link" data-scroll-target="#load-existing-model">Load existing model</a></li>
+  <li><a href="#single-redshift-emulation-for-new-cosmological-parameters" id="toc-single-redshift-emulation-for-new-cosmological-parameters" class="nav-link" data-scroll-target="#single-redshift-emulation-for-new-cosmological-parameters">Single-redshift emulation for new cosmological parameters</a></li>
+  <li><a href="#sensitivity-analysis-from-the-emulator" id="toc-sensitivity-analysis-from-the-emulator" class="nav-link" data-scroll-target="#sensitivity-analysis-from-the-emulator">Sensitivity analysis from the emulator</a></li>
+  <li><a href="#multi-redshift-emulation" id="toc-multi-redshift-emulation" class="nav-link" data-scroll-target="#multi-redshift-emulation">Multi-redshift emulation</a></li>
+  <li><a href="#parameter-inference-via-mcmc-using-the-emulator" id="toc-parameter-inference-via-mcmc-using-the-emulator" class="nav-link" data-scroll-target="#parameter-inference-via-mcmc-using-the-emulator">Parameter inference via MCMC using the emulator</a></li>
+  </ul></li>
+  <li><a href="#fisher-matrix-analysis" id="toc-fisher-matrix-analysis" class="nav-link" data-scroll-target="#fisher-matrix-analysis">Fisher matrix analysis</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/nesar/EarlyDarkEmu/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">EarlyDarkEmu</h1>
+</div>
+
+<div>
+  <div class="description">
+    GP emulator for power spectra in Early Dark Energy model
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<p>emulator for P(k) for dark matter power spectra</p>
+<section id="install" class="level2">
+<h2 class="anchored" data-anchor-id="install">Install</h2>
+<p>(not installable yet)</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install EarlyDarkEmu</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>(Use this development version instead)</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/nesar/EarlyDarkEmu.git</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> EarlyDarkEmu/</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-e</span> <span class="st">'.[dev]'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="basic-rundown" class="level2">
+<h2 class="anchored" data-anchor-id="basic-rundown">Basic rundown</h2>
+<section id="a-few-imports" class="level3">
+<h3 class="anchored" data-anchor-id="a-few-imports">A few imports</h3>
+<div id="cell-7" class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> EarlyDarkEmu.load <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> EarlyDarkEmu.viz <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> EarlyDarkEmu.pca <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> EarlyDarkEmu.gp <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> EarlyDarkEmu.emu <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> EarlyDarkEmu.mcmc <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pylab <span class="im">as</span> plt</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>if_train_all <span class="op">=</span> <span class="va">False</span> <span class="co">## Re-train all the models. Time-consuming. </span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>if_mcmc_all <span class="op">=</span> <span class="va">False</span>  <span class="co">## Full MCMC run. Time-consuming. </span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>if_savefig <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>if_pk_log <span class="op">=</span> <span class="va">True</span> <span class="co">## P(k) is to be in log10 scaling </span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>if_y_scale_plot_log <span class="op">=</span> <span class="kw">not</span> if_pk_log</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>if_separate_test_set <span class="op">=</span> <span class="va">True</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(210,)</code></pre>
+</div>
+</div>
+</section>
+<section id="loading-files" class="level3">
+<h3 class="anchored" data-anchor-id="loading-files">Loading files</h3>
+<div id="cell-9" class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>p_all <span class="op">=</span> load_params() <span class="co">## Loading Cosmological Parameters</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>Pk_all, k_all, z_all <span class="op">=</span> load_npy_pk_k_z(pk_log_scale<span class="op">=</span>if_pk_log) <span class="co"># Loading P(k), k and redshift</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(p_all.shape, Pk_all.shape, k_all.shape, z_all.shape, PARAM_NAME)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(PARAM_NAME))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>remove_invalid_index <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> remove_invalid_index <span class="op">==</span> <span class="va">True</span>:</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    remove_sim_indx <span class="op">=</span> [<span class="va">None</span>]</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    valid_indices <span class="op">=</span> [i <span class="cf">for</span> i <span class="kw">in</span>  np.arange(Pk_all.shape[<span class="dv">0</span>])  <span class="cf">if</span> i <span class="kw">not</span> <span class="kw">in</span> remove_sim_indx]</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    Pk_all <span class="op">=</span> Pk_all[valid_indices]</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    p_all <span class="op">=</span> p_all[valid_indices]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(64, 6) (64, 51, 210) (210,) (51,) ['$\\omega_m$', 'h', '$\\sigma_8$', '$\\log(z_c)$', '$f_{ede}$', '$\\theta_i$']
+6</code></pre>
+</div>
+</div>
+</section>
+<section id="a-few-plotting-routines" class="level3">
+<h3 class="anchored" data-anchor-id="a-few-plotting-routines">A few plotting routines</h3>
+<section id="experimental-design" class="level4">
+<h4 class="anchored" data-anchor-id="experimental-design">Experimental design</h4>
+</section>
+<section id="boost-metrics-colored-by-cosmology-parameters" class="level4">
+<h4 class="anchored" data-anchor-id="boost-metrics-colored-by-cosmology-parameters">Boost metrics colored by cosmology parameters</h4>
+<div id="cell-13" class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>color_by_index <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>z_index <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>plot_lines_with_param_color(p_all[:, color_by_index], </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                            k_all, </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                            Pk_all[:, z_index, :], </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                            <span class="st">'Training data, z='</span> <span class="op">+</span> <span class="bu">str</span>(z_all[z_index]), </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                            <span class="vs">r'$k [h/Mpc]$'</span>, </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>                            <span class="vs">r'$P(k) [(Mpc/h)^3]$'</span>, </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>                            PARAM_NAME[color_by_index],</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>                            y_log_plot_scale<span class="op">=</span>if_y_scale_plot_log)<span class="op">;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>k_sdss, pk_sdss, pk_error_sdss <span class="op">=</span> load_sdss()</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>k_wmap, pk_wmap, pk_error_wmap <span class="op">=</span> load_wmap()</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>k_lya, pk_lya, pk_error_lya <span class="op">=</span> load_lya()</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>k_plee, pk_plee, pk_error_plee <span class="op">=</span> load_planck_ee()</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>k_pltt, pk_pltt, pk_error_pltt <span class="op">=</span> load_planck_tt()</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>k_pl, pk_pl, pk_error_pl <span class="op">=</span> load_planck()</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>k_des, pk_des, pk_error_des <span class="op">=</span> load_des()</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="dv">0</span>,<span class="dv">5</span>)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>plt.errorbar(k_sdss, pk_sdss, yerr<span class="op">=</span>pk_error_sdss, label<span class="op">=</span><span class="st">'SDSS DR7'</span>)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>plt.errorbar(k_wmap, pk_wmap, yerr<span class="op">=</span>pk_error_wmap, label<span class="op">=</span><span class="st">'WMAP + ACT'</span>)</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>plt.errorbar(k_lya, pk_lya, yerr<span class="op">=</span>pk_error_lya, label<span class="op">=</span><span class="st">'eBOSS'</span>)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>plt.errorbar(k_plee, pk_plee, yerr<span class="op">=</span>pk_error_plee, label<span class="op">=</span><span class="st">'PLANCK_2018 EE'</span>)</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>plt.errorbar(k_pltt, (pk_pltt), yerr<span class="op">=</span>(pk_error_pltt), label<span class="op">=</span><span class="st">'PLANCK_2018 TT'</span>)</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>plt.errorbar(k_pl, pk_pl, yerr<span class="op">=</span>pk_error_pl, label<span class="op">=</span><span class="st">'PLANCK_2018'</span>)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>plt.errorbar(k_des, pk_des, yerr<span class="op">=</span>pk_error_des, label<span class="op">=</span><span class="st">'DES Y1 COSMIC SHEAR'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-5-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="training-involves-pca-gp-fitting." class="level3">
+<h3 class="anchored" data-anchor-id="training-involves-pca-gp-fitting.">Training involves: PCA, GP fitting.</h3>
+<div id="cell-15" class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> if_separate_test_set: </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">## Data prep</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    z_index <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    y_vals <span class="op">=</span> Pk_all[:, z_index, :]</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># y_ind = np.arange(0, y_vals.shape[1])</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    y_ind <span class="op">=</span> k_all</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Train-test split</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    test_indices <span class="op">=</span> [<span class="dv">60</span>, <span class="dv">30</span>, <span class="dv">26</span>]</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    input_params<span class="op">=</span> p_all[test_indices]</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    target_vals <span class="op">=</span> Pk_all[:, z_index, :][test_indices]</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    train_indices <span class="op">=</span> [i <span class="cf">for</span> i <span class="kw">in</span>  np.arange(Pk_all.shape[<span class="dv">0</span>]) <span class="cf">if</span> i <span class="kw">not</span> <span class="kw">in</span> test_indices]</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    p_all_train <span class="op">=</span> p_all[train_indices]</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    y_vals_train <span class="op">=</span> Pk_all[:, z_index, :][train_indices]</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Redshift: '</span> <span class="op">+</span> <span class="bu">str</span>(z_all[z_index]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-16" class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> if_separate_test_set:</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    p_all_test <span class="op">=</span> load_params(p_fileIn<span class="op">=</span>LIBRARY_PARAM_FILE_TEST) </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                              <span class="co">## Loading Cosmological Parameters</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    Pk_all_test, k_all_test, z_all_test <span class="op">=</span> load_npy_pk_k_z(Pk_fileIn<span class="op">=</span>LIBRARY_PK_FILE_TEST, </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                                                          k_fileIn<span class="op">=</span>LIBRARY_K_FILE_TEST, </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                                                          z_fileIn<span class="op">=</span>LIBRARY_Z_FILE_TEST,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>                                                          pk_log_scale<span class="op">=</span>if_pk_log) <span class="co"># Loading P(k), k and redshift</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">## Data prep</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    z_index <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    y_vals <span class="op">=</span> Pk_all[:, z_index, :]</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># y_ind = np.arange(0, y_vals.shape[1])</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    y_ind <span class="op">=</span> k_all</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Train-test split</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    test_indices <span class="op">=</span> []</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    input_params<span class="op">=</span> p_all_test</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    target_vals <span class="op">=</span> Pk_all_test[:, z_index, :]</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># train_indices = [i for i in  np.arange(Pk_all.shape[0]) if i not in test_indices]</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    train_indices <span class="op">=</span> [i <span class="cf">for</span> i <span class="kw">in</span>  np.arange(Pk_all.shape[<span class="dv">0</span>])]</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    p_all_train <span class="op">=</span> p_all[train_indices]</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    y_vals_train <span class="op">=</span> Pk_all[:, z_index, :][train_indices]</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Redshift: '</span> <span class="op">+</span> <span class="bu">str</span>(z_all[z_index]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Redshift: 0.02</code></pre>
+</div>
+</div>
+<div id="cell-17" class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df_train_a <span class="op">=</span> pd.DataFrame(np.concatenate([p_all, p_all_test], axis<span class="op">=</span><span class="dv">0</span>), columns<span class="op">=</span>PARAM_NAME)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'lightblue'</span>]<span class="op">*</span>p_all.shape[<span class="dv">0</span>] <span class="op">+</span> [<span class="st">'r'</span>]<span class="op">*</span>p_all_test.shape[<span class="dv">0</span>]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># colors = ['b']*num_sims + ['r']*num_sims_test</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>plot_scatter_matrix(df_train_a, colors)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-8-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-18" class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>sepia_data <span class="op">=</span> sepia_data_format(p_all_train, y_vals_train, y_ind)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sepia_data)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>model_filename <span class="op">=</span> <span class="st">'../EarlyDarkEmu/model/multivariate_model_z_index'</span> <span class="op">+</span> <span class="bu">str</span>(z_index) </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>sepia_model <span class="op">=</span> do_pca(sepia_data, exp_variance<span class="op">=</span><span class="fl">0.98</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>sepia_model <span class="op">=</span> do_gp_train(sepia_model, model_filename)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>plot_train_diagnostics(sepia_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>This SepiaData instance implies the following:
+This is a simulator (eta)-only model, y dimension 210
+m  =    64 (number of simulated data)
+p  =     1 (number of inputs)
+q  =     6 (number of additional simulation inputs)
+pu NOT SET (transformed response dimension); call method create_K_basis 
+
+Starting tune_step_sizes...
+Default step sizes:
+betaU
+[[0.1 0.1]
+ [0.1 0.1]
+ [0.1 0.1]
+ [0.1 0.1]
+ [0.1 0.1]
+ [0.1 0.1]
+ [0.1 0.1]]
+lamUz
+[[5. 5.]]
+lamWs
+[[100. 100.]]
+lamWOs
+[[100.]]</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Step size tuning: 100%|█████████████████████████| 50/50 [00:05&lt;00:00,  9.93it/s]</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Done with tune_step_size.
+Selected step sizes:
+betaU
+[[0.20654303 1.07272825]
+ [0.03717023 0.13188897]
+ [0.25422773 0.17042505]
+ [0.03965561 0.14086564]
+ [0.00388077 0.13123353]
+ [0.0047564  0.37692349]
+ [0.00111619 0.02588772]]
+lamUz
+[[0.41229222 0.51010359]]
+lamWs
+[[9161.88288534 1041.5495597 ]]
+lamWOs
+[[20.40418578]]</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>MCMC sampling: 100%|███████████████████████| 1000/1000 [00:05&lt;00:00, 193.20it/s]</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Model saved to ../EarlyDarkEmu/model/multivariate_model_z_index1.pkl
+No thetas to plot</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-9-output-6.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="load-existing-model" class="level3">
+<h3 class="anchored" data-anchor-id="load-existing-model">Load existing model</h3>
+<div id="cell-20" class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>sepia_model <span class="op">=</span> gp_load(sepia_model, model_filename)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>WARNING: make sure this model was instantiated with the same input data as the model corresonding to this saved model info.</code></pre>
+</div>
+</div>
+</section>
+<section id="single-redshift-emulation-for-new-cosmological-parameters" class="level3">
+<h3 class="anchored" data-anchor-id="single-redshift-emulation-for-new-cosmological-parameters">Single-redshift emulation for new cosmological parameters</h3>
+<div id="cell-22" class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test_indices_rand = np.random.randint(size=3, low=0, high=input_params.shape[0])</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>test_indices_rand <span class="op">=</span> np.arange(<span class="dv">0</span>, input_params.shape[<span class="dv">0</span>])</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>pred_mean, pred_quant <span class="op">=</span> emulate(sepia_model, input_params[test_indices_rand])</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># pred_quant == Emulated (0.05, 0.95) quantile</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># validation_plot(k_all, target_vals[test_indices_rand], pred_mean, pred_quant, xy_lims=[1e-5, 1e0, 10, 5e4], y_log_scale=if_y_scale_plot_log);</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>validation_plot(k_all, target_vals[test_indices_rand], pred_mean, pred_quant, xy_lims<span class="op">=</span>[<span class="fl">1e-5</span>, <span class="fl">1e0</span>, <span class="dv">1</span>, <span class="dv">5</span>], y_log_plot_scale<span class="op">=</span>if_y_scale_plot_log)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-11-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sensitivity-analysis-from-the-emulator" class="level3">
+<h3 class="anchored" data-anchor-id="sensitivity-analysis-from-the-emulator">Sensitivity analysis from the emulator</h3>
+<div id="cell-24" class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># f = sensitivity_plot(k_all, p_all, sepia_model, emulate, PARAM_NAME, xy_lims = [1e-5, 1e0, 10, 5e4], y_log_plot_scale=if_y_scale_plot_log )</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> sensitivity_plot(k_all, p_all, sepia_model, emulate, PARAM_NAME, xy_lims <span class="op">=</span> [<span class="fl">1e-5</span>, <span class="fl">1e0</span>, <span class="dv">1</span>, <span class="fl">4.7</span>], y_log_plot_scale<span class="op">=</span>if_y_scale_plot_log )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="multi-redshift-emulation" class="level3">
+<h3 class="anchored" data-anchor-id="multi-redshift-emulation">Multi-redshift emulation</h3>
+<section id="train-all-the-models" class="level4">
+<h4 class="anchored" data-anchor-id="train-all-the-models">Train all the models</h4>
+<div id="cell-27" class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> if_train_all:</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    do_gp_train_multiple(model_dir<span class="op">=</span><span class="st">'../EarlyDarkEmu/model/'</span>, </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>                        p_train_all <span class="op">=</span> p_all[train_indices],</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>                        y_vals_all <span class="op">=</span> Pk_all[train_indices],</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>                        y_ind_all <span class="op">=</span> k_all,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>                        z_index_range<span class="op">=</span><span class="bu">range</span>(z_all.shape[<span class="dv">0</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="load-all-trained-models" class="level4">
+<h4 class="anchored" data-anchor-id="load-all-trained-models">Load all trained models</h4>
+<div id="cell-29" class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>sepia_model_list <span class="op">=</span> load_model_multiple(model_dir<span class="op">=</span><span class="st">'../EarlyDarkEmu/model/'</span>, </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>                                        p_train_all<span class="op">=</span>p_all[train_indices],</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                                        y_vals_all<span class="op">=</span>Pk_all[train_indices],</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>                                        y_ind_all<span class="op">=</span>k_all,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>                                        z_index_range<span class="op">=</span><span class="bu">range</span>(z_all.shape[<span class="dv">0</span>]), </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>                                        sepia_model_i<span class="op">=</span>sepia_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of models loaded: 51</code></pre>
+</div>
+</div>
+</section>
+<section id="emulator-confidence-across-parameter-range" class="level4">
+<h4 class="anchored" data-anchor-id="emulator-confidence-across-parameter-range">Emulator confidence across parameter range</h4>
+<div id="cell-31" class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameter settings</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>steps <span class="op">=</span> <span class="dv">20</span>  <span class="co"># Number of steps in the grid for each parameter</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>param_name_extended <span class="op">=</span> np.append(PARAM_NAME, <span class="st">'Redshift'</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>red_min <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>red_max <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>red_mean <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>param_min <span class="op">=</span> np.append(p_all.<span class="bu">min</span>(axis<span class="op">=</span><span class="dv">0</span>), red_min)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>param_max <span class="op">=</span> np.append(p_all.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">0</span>), red_max)</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>param_mean <span class="op">=</span> np.append(p_all.mean(axis<span class="op">=</span><span class="dv">0</span>), red_mean)</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute outputs and errors for a range of parameter values</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_errors(param_grid):</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(param_grid.shape)</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    errors <span class="op">=</span> np.zeros(shape<span class="op">=</span>(param_grid.shape[<span class="dv">0</span>], ))</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># errors = np.array([np.mean(emu_redshift(params[np.newaxis, :], sepia_model_list, z_all)[1][:, 0, :]**2) for params in param_grid])</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> par_indx <span class="kw">in</span> <span class="bu">range</span>(errors.shape[<span class="dv">0</span>]):</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>        errors[par_indx] <span class="op">=</span> np.mean(emu_redshift(param_grid[par_indx][np.newaxis, :], sepia_model_list, z_all)[<span class="dv">1</span>]<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> errors.reshape(steps, steps)</span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage:</span></span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>param_indices <span class="op">=</span> [<span class="dv">3</span>, <span class="dv">4</span>]  <span class="co"># Indices of parameters to vary</span></span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>fixed_indices <span class="op">=</span> [i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(param_name_extended)) <span class="cf">if</span> i <span class="kw">not</span> <span class="kw">in</span> param_indices]</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>fixed_params <span class="op">=</span> {param_name_extended[i]: param_mean[i] <span class="cf">for</span> i <span class="kw">in</span> fixed_indices}</span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>param_grid <span class="op">=</span> generate_param_grid_with_fixed(param_name_extended, param_indices, fixed_params, param_min, param_max, steps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-32" class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>errors <span class="op">=</span> compute_errors(param_grid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(400, 7)</code></pre>
+</div>
+</div>
+<div id="cell-33" class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> plot_error_heatmap(errors, [param_name_extended[i] <span class="cf">for</span> i <span class="kw">in</span> param_indices], [(param_min[param_indices[<span class="dv">0</span>]], param_max[param_indices[<span class="dv">0</span>]]), (param_min[param_indices[<span class="dv">1</span>]], param_max[param_indices[<span class="dv">1</span>]])])</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> if_savefig: </span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    f.savefig(<span class="st">'../../../Plots/heatmap_params_4_5.png'</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="parameter-inference-via-mcmc-using-the-emulator" class="level3">
+<h3 class="anchored" data-anchor-id="parameter-inference-via-mcmc-using-the-emulator">Parameter inference via MCMC using the emulator</h3>
+<section id="creating-mock-observational-data" class="level4">
+<h4 class="anchored" data-anchor-id="creating-mock-observational-data">Creating mock observational data</h4>
+<div id="cell-36" class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>create_mock_obs <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> create_mock_obs: </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    target_indx <span class="op">=</span> <span class="dv">0</span> <span class="co">#0 ,14, 35</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    z_index <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    L <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    fake_obs_data_index_every <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    redshift <span class="op">=</span> z_all[z_index]</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    x_target_mcmc <span class="op">=</span> k_all[::fake_obs_data_index_every]</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    y_target_mcmc <span class="op">=</span> Pk_all[:, z_index, :][target_indx][::fake_obs_data_index_every]</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> if_pk_log: y_target_mcmc <span class="op">=</span> y_target_mcmc<span class="op">*</span>(<span class="dv">1</span> <span class="op">+</span> np.random.normal(<span class="fl">0.0</span>, <span class="fl">0.5</span>, size<span class="op">=</span>y_target_mcmc.shape))</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> if_pk_log: y_target_mcmc <span class="op">=</span> y_target_mcmc<span class="op">*</span>(<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.02</span><span class="op">*</span>np.random.normal(<span class="fl">0.0</span>, <span class="dv">1</span>, size<span class="op">=</span>y_target_mcmc.shape))</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> if_pk_log: yerr_target_mcmc <span class="op">=</span> np.sqrt( Pk_all[:, z_index, :][target_indx][::fake_obs_data_index_every]<span class="op">*</span>(L<span class="op">**</span><span class="dv">3</span>))<span class="op">/</span>((<span class="fl">0.1</span><span class="op">*</span>L)<span class="op">**</span><span class="dv">3</span>)</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> if_pk_log: yerr_target_mcmc <span class="op">=</span> np.sqrt( Pk_all[:, z_index, :][target_indx][::fake_obs_data_index_every]<span class="op">*</span>(L<span class="op">**</span><span class="dv">3</span>))<span class="op">/</span>((<span class="fl">0.5</span><span class="op">*</span>L)<span class="op">**</span><span class="dv">3</span>)</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>    x_grid <span class="op">=</span> k_all</span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>    params_calib <span class="op">=</span> p_all[target_indx][:, np.newaxis].T</span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'redshift: '</span>, redshift)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-37" class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> create_mock_obs:</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    redshift <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    k_sdss, pk_sdss, pk_error_sdss <span class="op">=</span> load_sdss()</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    k_wmap, pk_wmap, pk_error_wmap <span class="op">=</span> load_wmap()</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    k_lya, pk_lya, pk_error_lya <span class="op">=</span> load_lya()</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    k_plee, pk_plee, pk_error_plee <span class="op">=</span> load_planck_ee()</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    k_pltt, pk_pltt, pk_error_pltt <span class="op">=</span> load_planck_tt()</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    k_pl, pk_pl, pk_error_pl <span class="op">=</span> load_planck()</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    k_des, pk_des, pk_error_des <span class="op">=</span> load_des()</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    x_target_mcmc <span class="op">=</span> np.concatenate([k_sdss, k_wmap, k_lya, k_plee, k_pltt, k_pl, k_des])</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>    y_target_mcmc <span class="op">=</span> np.concatenate([pk_sdss, pk_wmap, pk_lya, pk_plee, pk_pltt, pk_pl, pk_des])</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>    yerr_target_mcmc <span class="op">=</span> np.concatenate([pk_error_sdss, pk_error_wmap, pk_error_lya, pk_error_plee, pk_error_pltt, pk_error_pl, pk_error_des])</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>    params_calib <span class="op">=</span> [[<span class="fl">0.1375</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">3.531</span>, <span class="fl">0.1</span>, <span class="fl">2.72</span>]]  <span class="co">## Best EDE values from 1908.06995</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>    x_grid <span class="op">=</span> k_all</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-38" class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>f, a <span class="op">=</span> plt.subplots(<span class="dv">1</span>,<span class="dv">1</span>, figsize <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">5</span>)) </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>input_params_and_redshift <span class="op">=</span> np.append(params_calib, redshift)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>bk_target, err_target <span class="op">=</span> emu_redshift(input_params_and_redshift[np.newaxis, :], sepia_model_list, z_all)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>a.plot(k_all, bk_target[:, <span class="dv">0</span>], label<span class="op">=</span><span class="st">'Emulated at target params'</span>, lw<span class="op">=</span><span class="dv">2</span>, ls<span class="op">=</span><span class="st">'--'</span>, color<span class="op">=</span><span class="st">'blue'</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> create_mock_obs:</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    data_label <span class="op">=</span> <span class="st">'Target mock observations'</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>: </span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    data_label <span class="op">=</span> <span class="st">'Target: SDSS + WMAP + ACT'</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>a.errorbar(x_target_mcmc, y_target_mcmc, yerr_target_mcmc, label<span class="op">=</span>data_label, ls<span class="op">=</span><span class="st">'none'</span>, lw<span class="op">=</span><span class="dv">1</span>, color <span class="op">=</span> <span class="st">"r"</span>)</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>a.scatter(x_target_mcmc, y_target_mcmc, s <span class="op">=</span> <span class="dv">5</span>, marker <span class="op">=</span> <span class="st">"h"</span>, color <span class="op">=</span> <span class="st">"k"</span>)</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>a.plot(k_all, Pk_all[:, z_index, :].T, <span class="st">'k'</span>, alpha<span class="op">=</span><span class="fl">0.02</span>)</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>plt.plot(k_all, emulate(sepia_model_list[z_index], input_params_and_redshift[:<span class="op">-</span><span class="dv">1</span>])[<span class="dv">0</span>], label<span class="op">=</span><span class="st">'grid z=</span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>z_all[z_index])</span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>plt.plot(k_all, emulate(sepia_model_list[z_index<span class="op">+</span><span class="dv">1</span>], input_params_and_redshift[:<span class="op">-</span><span class="dv">1</span>])[<span class="dv">0</span>], label<span class="op">=</span><span class="st">'grid z=</span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>z_all[z_index <span class="op">+</span> <span class="dv">1</span>])</span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> create_mock_obs: string_print0 <span class="op">=</span> <span class="st">'Target Params </span><span class="ch">\n</span><span class="st"> (from sim) </span><span class="ch">\n\n</span><span class="st">'</span> </span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> create_mock_obs: string_print0 <span class="op">=</span> <span class="st">'Target params </span><span class="ch">\n</span><span class="st">(arXiv:1908.06995) </span><span class="ch">\n\n</span><span class="st">'</span> </span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>string_print1 <span class="op">=</span> PARAM_NAME[<span class="dv">0</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>input_params_and_redshift[<span class="dv">0</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>string_print2 <span class="op">=</span> PARAM_NAME[<span class="dv">1</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>input_params_and_redshift[<span class="dv">1</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a>string_print3 <span class="op">=</span> PARAM_NAME[<span class="dv">2</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>input_params_and_redshift[<span class="dv">2</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a>string_print4 <span class="op">=</span> PARAM_NAME[<span class="dv">3</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>input_params_and_redshift[<span class="dv">3</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a>string_print5 <span class="op">=</span> PARAM_NAME[<span class="dv">4</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>input_params_and_redshift[<span class="dv">4</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a>string_print6 <span class="op">=</span> PARAM_NAME[<span class="dv">5</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>input_params_and_redshift[<span class="dv">5</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a>string_print8 <span class="op">=</span> <span class="st">'redshift'</span> <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>input_params_and_redshift[<span class="dv">6</span>] </span>
+<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-34"><a href="#cb31-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-35"><a href="#cb31-35" aria-hidden="true" tabindex="-1"></a>string_print <span class="op">=</span> string_print0 <span class="op">+</span> string_print1 <span class="op">+</span> string_print2 <span class="op">+</span> string_print3 <span class="op">+</span> string_print4 <span class="op">+</span> string_print5 <span class="op">+</span> string_print6  <span class="op">+</span> string_print8</span>
+<span id="cb31-36"><a href="#cb31-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a>props <span class="op">=</span> <span class="bu">dict</span>(boxstyle<span class="op">=</span><span class="st">'round'</span>, facecolor<span class="op">=</span><span class="st">'gray'</span>, alpha<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb31-38"><a href="#cb31-38" aria-hidden="true" tabindex="-1"></a>plt.text(<span class="fl">1.02</span>, <span class="fl">0.1</span>, string_print, transform<span class="op">=</span>a.transAxes, fontsize<span class="op">=</span><span class="dv">12</span>, bbox<span class="op">=</span>props)</span>
+<span id="cb31-39"><a href="#cb31-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-40"><a href="#cb31-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-41"><a href="#cb31-41" aria-hidden="true" tabindex="-1"></a>a.set_xscale(<span class="st">'log'</span>)</span>
+<span id="cb31-42"><a href="#cb31-42" aria-hidden="true" tabindex="-1"></a><span class="co"># a.set_yscale('log')</span></span>
+<span id="cb31-43"><a href="#cb31-43" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'pre-MCMC'</span>)</span>
+<span id="cb31-44"><a href="#cb31-44" aria-hidden="true" tabindex="-1"></a>a.set_xlabel(<span class="vs">r'$k [h/Mpc]$'</span>)</span>
+<span id="cb31-45"><a href="#cb31-45" aria-hidden="true" tabindex="-1"></a>a.set_ylabel(<span class="vs">r'$P(k)$'</span>)</span>
+<span id="cb31-46"><a href="#cb31-46" aria-hidden="true" tabindex="-1"></a>plt.legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-20-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-39" class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>pos0 <span class="op">=</span> chain_init(params_list, ndim, nwalkers)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>sampler <span class="op">=</span> define_sampler(redshift, ndim, nwalkers, params_list, x_grid, sepia_model_list, z_all, x_target_mcmc, y_target_mcmc, yerr_target_mcmc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="mcmc-run---first-burn-then-full." class="level5">
+<h5 class="anchored" data-anchor-id="mcmc-run---first-burn-then-full.">MCMC run - first burn, then full.</h5>
+<div id="cell-41" class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>pos, prob, state, samples, sampler, autocorr, index <span class="op">=</span> do_mcmc(sampler, pos0, nrun_burn, ndim, if_burn<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> if_mcmc_all: <span class="co"># Full MCMC-run, will be slow</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    pos, prob, state, samples, sampler, autocorr, index <span class="op">=</span> do_mcmc(sampler, pos, nrun, ndim, if_burn<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>p_mcmc <span class="op">=</span> mcmc_results(samples)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plot_mcmc(samples, params_list, if_truth_know<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="co"># if if_savefig: </span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     plt.savefig('../../../Plots/mcmc_plot.png', bbox_inches='tight')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Burn-in phase
+time (minutes): 0.6017665227254232</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>100%|███████████████████████████████████████████| 50/50 [00:32&lt;00:00,  1.54it/s]</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>mcmc results: 0.14637000024895402 0.7051308553607339 0.811299909354517 3.530070978224219 0.0943624409669398 2.720905473749736</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-22-output-4.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-42" class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>f, a <span class="op">=</span> plt.subplots(<span class="dv">1</span>,<span class="dv">1</span>, figsize <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">5</span>)) </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>input_params_and_redshift <span class="op">=</span> np.append(p_mcmc, redshift)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>bk_mcmc, err_mcmc <span class="op">=</span> emu_redshift(input_params_and_redshift[np.newaxis, :], sepia_model_list, z_all)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>a.plot(k_all, bk_mcmc[:, <span class="dv">0</span>], label<span class="op">=</span><span class="st">'Emulated at best MCMC'</span>, lw<span class="op">=</span><span class="dv">2</span>, ls<span class="op">=</span><span class="st">'--'</span>)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>a.errorbar(x_target_mcmc, y_target_mcmc, yerr_target_mcmc, label<span class="op">=</span>data_label, ls<span class="op">=</span><span class="st">'none'</span>, lw<span class="op">=</span><span class="dv">1</span>, color <span class="op">=</span> <span class="st">"r"</span>)</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>a.scatter(x_target_mcmc, y_target_mcmc, s <span class="op">=</span> <span class="dv">5</span>, marker <span class="op">=</span> <span class="st">"h"</span>, color <span class="op">=</span> <span class="st">"r"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>a.plot(k_all, Pk_all[:, z_index, :].T, <span class="st">'k'</span>, alpha<span class="op">=</span><span class="fl">0.02</span>)</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="co"># plt.plot(k_all, emulate(sepia_model_list[z_index], input_params_and_redshift[:-1])[0], label='Z1')</span></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a><span class="co"># plt.plot(k_all, emulate(sepia_model_list[z_index+1], input_params_and_redshift[:-1])[0], label='Z2')</span></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>string_print1 <span class="op">=</span> PARAM_NAME[<span class="dv">0</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>params_calib[<span class="dv">0</span>][<span class="dv">0</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>string_print2 <span class="op">=</span> PARAM_NAME[<span class="dv">1</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>params_calib[<span class="dv">0</span>][<span class="dv">1</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>string_print3 <span class="op">=</span> PARAM_NAME[<span class="dv">2</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>params_calib[<span class="dv">0</span>][<span class="dv">2</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>string_print4 <span class="op">=</span> PARAM_NAME[<span class="dv">3</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>params_calib[<span class="dv">0</span>][<span class="dv">3</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>string_print5 <span class="op">=</span> PARAM_NAME[<span class="dv">4</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>params_calib[<span class="dv">0</span>][<span class="dv">4</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>string_print6 <span class="op">=</span> PARAM_NAME[<span class="dv">5</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>params_calib[<span class="dv">0</span>][<span class="dv">5</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>string_print8 <span class="op">=</span> <span class="st">'redshift'</span> <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>redshift</span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a>string_print <span class="op">=</span> string_print0 <span class="op">+</span> string_print1 <span class="op">+</span> string_print2 <span class="op">+</span> string_print3 <span class="op">+</span> string_print4 <span class="op">+</span> string_print5 <span class="op">+</span> string_print6  <span class="op">+</span> string_print8</span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a>props <span class="op">=</span> <span class="bu">dict</span>(boxstyle<span class="op">=</span><span class="st">'round'</span>, facecolor<span class="op">=</span><span class="st">'gray'</span>, alpha<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a>plt.text(<span class="fl">1.02</span>, <span class="fl">0.5</span>, string_print, transform<span class="op">=</span>a.transAxes, fontsize<span class="op">=</span><span class="dv">12</span>, bbox<span class="op">=</span>props)</span>
+<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a>string_print0_mcmc <span class="op">=</span> <span class="st">'Optimized Params </span><span class="ch">\n\n</span><span class="st">'</span> </span>
+<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a>string_print1_mcmc <span class="op">=</span> PARAM_NAME[<span class="dv">0</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>p_mcmc[<span class="dv">0</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a>string_print2_mcmc <span class="op">=</span> PARAM_NAME[<span class="dv">1</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>p_mcmc[<span class="dv">1</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a>string_print3_mcmc <span class="op">=</span> PARAM_NAME[<span class="dv">2</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>p_mcmc[<span class="dv">2</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb37-33"><a href="#cb37-33" aria-hidden="true" tabindex="-1"></a>string_print4_mcmc <span class="op">=</span> PARAM_NAME[<span class="dv">3</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>p_mcmc[<span class="dv">3</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb37-34"><a href="#cb37-34" aria-hidden="true" tabindex="-1"></a>string_print5_mcmc <span class="op">=</span> PARAM_NAME[<span class="dv">4</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>p_mcmc[<span class="dv">4</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb37-35"><a href="#cb37-35" aria-hidden="true" tabindex="-1"></a>string_print6_mcmc <span class="op">=</span> PARAM_NAME[<span class="dv">5</span>] <span class="op">+</span> <span class="st">'= </span><span class="sc">%.4f</span><span class="st">'</span><span class="op">%</span>p_mcmc[<span class="dv">5</span>]</span>
+<span id="cb37-36"><a href="#cb37-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-37"><a href="#cb37-37" aria-hidden="true" tabindex="-1"></a>string_print_mcmc <span class="op">=</span> string_print0_mcmc <span class="op">+</span> string_print1_mcmc <span class="op">+</span> string_print2_mcmc <span class="op">+</span> string_print3_mcmc <span class="op">+</span> string_print4_mcmc <span class="op">+</span> string_print5_mcmc <span class="op">+</span> string_print6_mcmc </span>
+<span id="cb37-38"><a href="#cb37-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-39"><a href="#cb37-39" aria-hidden="true" tabindex="-1"></a>props <span class="op">=</span> <span class="bu">dict</span>(boxstyle<span class="op">=</span><span class="st">'round'</span>, facecolor<span class="op">=</span><span class="st">'blue'</span>, alpha<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb37-40"><a href="#cb37-40" aria-hidden="true" tabindex="-1"></a>plt.text(<span class="fl">1.02</span>, <span class="op">-</span><span class="fl">0.05</span>, string_print_mcmc, transform<span class="op">=</span>a.transAxes, fontsize<span class="op">=</span><span class="dv">12</span>, bbox<span class="op">=</span>props)</span>
+<span id="cb37-41"><a href="#cb37-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-42"><a href="#cb37-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-43"><a href="#cb37-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-44"><a href="#cb37-44" aria-hidden="true" tabindex="-1"></a>a.set_xscale(<span class="st">'log'</span>)</span>
+<span id="cb37-45"><a href="#cb37-45" aria-hidden="true" tabindex="-1"></a><span class="co"># a.set_yscale('log')</span></span>
+<span id="cb37-46"><a href="#cb37-46" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'P(k) at MCMC constraints'</span>)</span>
+<span id="cb37-47"><a href="#cb37-47" aria-hidden="true" tabindex="-1"></a>a.set_xlabel(<span class="vs">r'$k [h/Mpc]$'</span>)</span>
+<span id="cb37-48"><a href="#cb37-48" aria-hidden="true" tabindex="-1"></a>a.set_ylabel(<span class="vs">r'$P(k)$'</span>)</span>
+<span id="cb37-49"><a href="#cb37-49" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb37-50"><a href="#cb37-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-51"><a href="#cb37-51" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> if_savefig: </span>
+<span id="cb37-52"><a href="#cb37-52" aria-hidden="true" tabindex="-1"></a>    plt.savefig(<span class="st">'../../../Plots/mcmc_results_Bk.png'</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-23-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+</section>
+<section id="fisher-matrix-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="fisher-matrix-analysis">Fisher matrix analysis</h2>
+<div id="cell-44" class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Fisher Class</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.integrate <span class="im">import</span> simps</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-45" class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Defining the derivative and p(k) function</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> power_spectra(params, redshift):</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    params_and_redshift <span class="op">=</span> np.append(params, redshift)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># pred_mean, pred_err = emulate(sepia_model, params) ## -- use this emu_redshift -- change pred_error</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    pred_mean, pred_err <span class="op">=</span> emu_redshift(params_and_redshift[np.newaxis, :], sepia_model_list, z_all)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pred_mean[:, <span class="dv">0</span>], pred_err[:, <span class="dv">0</span>] <span class="co">## Check how to scale P(k) and Pk_errors properly</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-46" class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> FisherMatrix:</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, k_values, pk, pk_errors, params):</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.k_values <span class="op">=</span> np.array(k_values)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.pk <span class="op">=</span> np.array(pk)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.pk_errors <span class="op">=</span> np.array(pk_errors)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.params <span class="op">=</span> np.array(params)</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># self.redshift = self.redshift</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n_params <span class="op">=</span> <span class="bu">len</span>(params)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fmat <span class="op">=</span> np.zeros((<span class="va">self</span>.n_params, <span class="va">self</span>.n_params))</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> compute_fmat(<span class="va">self</span>, derivatives):</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_params):</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_params):</span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>                integrand <span class="op">=</span> derivatives[i] <span class="op">*</span> derivatives[j] <span class="op">/</span> <span class="va">self</span>.pk_errors<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>                <span class="co"># self.fmat[i, j] = np.sum(integrand)</span></span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.fmat[i, j] <span class="op">=</span> simps(integrand, <span class="va">self</span>.k_values)</span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.fmat</span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> uncertainty(<span class="va">self</span>):</span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.linalg.det(<span class="va">self</span>.fmat) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fisher is singular."</span>)</span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a>        inv_fisher <span class="op">=</span> np.linalg.inv(<span class="va">self</span>.fmat)</span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.sqrt(np.diagonal(inv_fisher))</span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> deriv(params, redshift, perturb <span class="op">=</span> <span class="fl">1e-5</span>):</span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a>    n_par <span class="op">=</span> <span class="bu">len</span>(params)</span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a>    pk, _ <span class="op">=</span> power_spectra(params, redshift)</span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a>    derivative <span class="op">=</span> np.zeros((<span class="bu">len</span>(pk), <span class="bu">len</span>(pk)))</span>
+<span id="cb40-31"><a href="#cb40-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-32"><a href="#cb40-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_par):</span>
+<span id="cb40-33"><a href="#cb40-33" aria-hidden="true" tabindex="-1"></a>        params_up  <span class="op">=</span> params.copy()</span>
+<span id="cb40-34"><a href="#cb40-34" aria-hidden="true" tabindex="-1"></a>        params_down  <span class="op">=</span> params.copy()</span>
+<span id="cb40-35"><a href="#cb40-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-36"><a href="#cb40-36" aria-hidden="true" tabindex="-1"></a>        params_up[i] <span class="op">+=</span> perturb</span>
+<span id="cb40-37"><a href="#cb40-37" aria-hidden="true" tabindex="-1"></a>        params_down[i] <span class="op">-=</span> perturb</span>
+<span id="cb40-38"><a href="#cb40-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-39"><a href="#cb40-39" aria-hidden="true" tabindex="-1"></a>        <span class="co"># pk_up = power_spectra(kvals, params_up)</span></span>
+<span id="cb40-40"><a href="#cb40-40" aria-hidden="true" tabindex="-1"></a>        <span class="co"># pk_down = power_spectra(kvals, params_down)</span></span>
+<span id="cb40-41"><a href="#cb40-41" aria-hidden="true" tabindex="-1"></a>        pk_up, _ <span class="op">=</span> power_spectra(params_up, redshift)</span>
+<span id="cb40-42"><a href="#cb40-42" aria-hidden="true" tabindex="-1"></a>        pk_down, _ <span class="op">=</span> power_spectra(params_down, redshift)</span>
+<span id="cb40-43"><a href="#cb40-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-44"><a href="#cb40-44" aria-hidden="true" tabindex="-1"></a>        derivative[i] <span class="op">=</span> (pk_up <span class="op">-</span> pk_down)<span class="op">/</span>(<span class="dv">2</span><span class="op">*</span>perturb)</span>
+<span id="cb40-45"><a href="#cb40-45" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb40-46"><a href="#cb40-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> derivative, pk_up, pk_down</span>
+<span id="cb40-47"><a href="#cb40-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-48"><a href="#cb40-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-49"><a href="#cb40-49" aria-hidden="true" tabindex="-1"></a><span class="co">#Using the fmat above we want to calculate hessian ellipses --  need 2x2 matrices</span></span>
+<span id="cb40-50"><a href="#cb40-50" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _2x2_matrices(matrix):</span>
+<span id="cb40-51"><a href="#cb40-51" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> matrix.shape[<span class="dv">0</span>]</span>
+<span id="cb40-52"><a href="#cb40-52" aria-hidden="true" tabindex="-1"></a>    pairwise_matrices <span class="op">=</span> []</span>
+<span id="cb40-53"><a href="#cb40-53" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb40-54"><a href="#cb40-54" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Loop over all pairs (i, j) with i &lt; j</span></span>
+<span id="cb40-55"><a href="#cb40-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb40-56"><a href="#cb40-56" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(i <span class="op">+</span> <span class="dv">1</span>, n):</span>
+<span id="cb40-57"><a href="#cb40-57" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Create a 2x2 matrix from the pair</span></span>
+<span id="cb40-58"><a href="#cb40-58" aria-hidden="true" tabindex="-1"></a>            pairwise_matrix <span class="op">=</span> np.array([[matrix[i, i], matrix[i, j]],</span>
+<span id="cb40-59"><a href="#cb40-59" aria-hidden="true" tabindex="-1"></a>                                         [matrix[j, i], matrix[j, j]]])</span>
+<span id="cb40-60"><a href="#cb40-60" aria-hidden="true" tabindex="-1"></a>            pairwise_matrices.append(pairwise_matrix)</span>
+<span id="cb40-61"><a href="#cb40-61" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb40-62"><a href="#cb40-62" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pairwise_matrices</span>
+<span id="cb40-63"><a href="#cb40-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-64"><a href="#cb40-64" aria-hidden="true" tabindex="-1"></a><span class="co">#Regularizing the matrix before plotting - so it doesn't raise the "hessian is not neg def" error</span></span>
+<span id="cb40-65"><a href="#cb40-65" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regularize_hessian(H, lambda_reg<span class="op">=</span><span class="fl">1e-5</span>):</span>
+<span id="cb40-66"><a href="#cb40-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-67"><a href="#cb40-67" aria-hidden="true" tabindex="-1"></a>    H <span class="op">=</span> np.array(H)</span>
+<span id="cb40-68"><a href="#cb40-68" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb40-69"><a href="#cb40-69" aria-hidden="true" tabindex="-1"></a>    identity_matrix <span class="op">=</span> np.eye(H.shape[<span class="dv">0</span>])</span>
+<span id="cb40-70"><a href="#cb40-70" aria-hidden="true" tabindex="-1"></a>    H_regularized <span class="op">=</span> H <span class="op">+</span> lambda_reg <span class="op">*</span> identity_matrix</span>
+<span id="cb40-71"><a href="#cb40-71" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb40-72"><a href="#cb40-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> H_regularized</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-47" class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>redshift_fid <span class="op">=</span> <span class="fl">0.9</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>param_fid <span class="op">=</span> np.array([<span class="fl">0.13844</span>, <span class="fl">0.6991</span>, <span class="fl">0.7997</span>, <span class="fl">3.530</span>, <span class="fl">0.0993</span>, <span class="fl">2.72</span>])</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>pk_fid, pk_error_fid <span class="op">=</span> power_spectra(param_fid, redshift_fid)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>derivs, pk_up, pk_down <span class="op">=</span> deriv(param_fid, redshift_fid)</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>k_values <span class="op">=</span> np.log10(k_all)</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>fisher <span class="op">=</span> FisherMatrix(k_values, pk_fid, pk_error_fid, param_fid)</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>fmat_fid <span class="op">=</span> fisher.compute_fmat(derivs)</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>fish_all <span class="op">=</span> np.array(_2x2_matrices(<span class="op">-</span>fmat_fid))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-48" class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Standalone test</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-49" class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#We need to plot the 2x2 hessian ellipses - Function from Nesar</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.patches <span class="im">import</span> Ellipse</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-50" class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>standalone_fisher_test <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> standalone_fisher_test: </span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>        param_fiducial <span class="op">=</span> np.array([<span class="fl">0.13844</span>, <span class="fl">0.6991</span>, <span class="fl">0.7997</span>, <span class="fl">3.530</span>, <span class="fl">0.0993</span>, <span class="fl">2.72</span>])</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>        p_names <span class="op">=</span> [<span class="st">'$</span><span class="ch">\\</span><span class="st">omega_m$'</span>, <span class="st">'h'</span>, <span class="st">'$</span><span class="ch">\\</span><span class="st">sigma_8$'</span>, <span class="st">'$</span><span class="ch">\\</span><span class="st">log(z_c)$'</span>, <span class="st">'$f_</span><span class="sc">{ede}</span><span class="st">$'</span>, <span class="st">'$</span><span class="ch">\\</span><span class="st">theta_i$'</span>]</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>        p_min <span class="op">=</span> np.array([<span class="fl">0.12</span>, <span class="fl">0.55</span>, <span class="fl">0.7</span> , <span class="fl">3.</span>  , <span class="fl">0.</span>  , <span class="fl">0.</span>  ])</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>        p_max <span class="op">=</span> np.array([<span class="fl">0.155</span>, <span class="fl">0.85</span> , <span class="fl">0.9</span>  , <span class="fl">4.</span>   , <span class="fl">0.5</span>  , <span class="fl">3.14</span> ])</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>        fmat_fid <span class="op">=</span> np.array([[  <span class="fl">33602.33436514</span>,  <span class="op">-</span><span class="fl">16812.85135088</span>,  <span class="op">-</span><span class="fl">33306.49447045</span>,</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>         <span class="op">-</span><span class="fl">28651.99102799</span>,    <span class="fl">7955.28501939</span>,  <span class="op">-</span><span class="fl">19192.39592227</span>],</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>       [ <span class="op">-</span><span class="fl">16812.85135088</span>,    <span class="fl">8471.49395214</span>,   <span class="fl">12617.76405109</span>,</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>          <span class="fl">12309.1688204</span> ,    <span class="op">-</span><span class="fl">599.4785199</span> ,    <span class="fl">9966.86094666</span>],</span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>       [ <span class="op">-</span><span class="fl">33306.49447045</span>,   <span class="fl">12617.76405109</span>,  <span class="fl">309579.52928037</span>,</span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>         <span class="fl">166905.49266398</span>, <span class="op">-</span><span class="fl">238929.54284678</span>,   <span class="op">-</span><span class="fl">5850.67462856</span>],</span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>       [ <span class="op">-</span><span class="fl">28651.99102799</span>,   <span class="fl">12309.1688204</span> ,  <span class="fl">166905.49266398</span>,</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>          <span class="fl">93795.30933078</span>, <span class="op">-</span><span class="fl">122491.4294374</span> ,    <span class="fl">3907.87406654</span>],</span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>       [   <span class="fl">7955.28501939</span>,    <span class="op">-</span><span class="fl">599.4785199</span> , <span class="op">-</span><span class="fl">238929.54284678</span>,</span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">-</span><span class="fl">122491.4294374</span> ,  <span class="fl">194898.50173265</span>,   <span class="fl">16236.1357093</span> ],</span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a>       [ <span class="op">-</span><span class="fl">19192.39592227</span>,    <span class="fl">9966.86094666</span>,   <span class="op">-</span><span class="fl">5850.67462856</span>,</span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a>           <span class="fl">3907.87406654</span>,   <span class="fl">16236.1357093</span> ,   <span class="fl">13199.13065175</span>]])</span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>: </span>
+<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a>        param_fiducial <span class="op">=</span> p_mcmc</span>
+<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a>        p_names <span class="op">=</span> PARAM_NAME</span>
+<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a>        p_min <span class="op">=</span> allMin</span>
+<span id="cb44-26"><a href="#cb44-26" aria-hidden="true" tabindex="-1"></a>        p_max <span class="op">=</span> allMax</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-51" class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_contours(hessian, pos, nstd<span class="op">=</span><span class="fl">1.</span>, ax<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs):</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> eigsorted(cov):</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>        vals, vecs <span class="op">=</span> np.linalg.eigh(cov)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>        order <span class="op">=</span> vals.argsort()[::<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> vals[order], vecs[:, order]</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ensure Hessian is negative definite for covariance inversion</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> np.<span class="bu">all</span>(np.linalg.eigvals(<span class="op">-</span>hessian) <span class="op">&gt;</span> <span class="dv">0</span>):</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>        mat <span class="op">=</span> <span class="op">-</span>hessian</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"The Hessian is not negative definite."</span>)</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>    cov <span class="op">=</span> np.linalg.pinv(mat)</span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check for valid covariance values</span></span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> np.<span class="bu">all</span>(np.isfinite(cov)):</span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Covariance matrix contains NaN or Inf."</span>)</span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>    sigma_marg <span class="op">=</span> <span class="kw">lambda</span> i: np.sqrt(cov[i, i])</span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ax <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a>        ax <span class="op">=</span> plt.gca()</span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a>    vals, vecs <span class="op">=</span> eigsorted(cov)</span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> np.<span class="bu">any</span>(vals <span class="op">&lt;</span> <span class="dv">0</span>):</span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Negative eigenvalues found in covariance matrix."</span>)</span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a>    theta <span class="op">=</span> np.degrees(np.arctan2(<span class="op">*</span>vecs[:, <span class="dv">0</span>][::<span class="op">-</span><span class="dv">1</span>]))</span>
+<span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-29"><a href="#cb45-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Width and height are "full" widths, not radius</span></span>
+<span id="cb45-30"><a href="#cb45-30" aria-hidden="true" tabindex="-1"></a>    width, height <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> nstd <span class="op">*</span> np.sqrt(np.<span class="bu">abs</span>(vals))</span>
+<span id="cb45-31"><a href="#cb45-31" aria-hidden="true" tabindex="-1"></a>    ellip <span class="op">=</span> Ellipse(xy<span class="op">=</span>pos, width<span class="op">=</span>width, height<span class="op">=</span>height, angle<span class="op">=</span>theta, <span class="op">**</span>kwargs)</span>
+<span id="cb45-32"><a href="#cb45-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-33"><a href="#cb45-33" aria-hidden="true" tabindex="-1"></a>    ax.add_artist(ellip)</span>
+<span id="cb45-34"><a href="#cb45-34" aria-hidden="true" tabindex="-1"></a>    sz <span class="op">=</span> <span class="bu">max</span>(width, height)</span>
+<span id="cb45-35"><a href="#cb45-35" aria-hidden="true" tabindex="-1"></a>    s1 <span class="op">=</span> <span class="fl">1.5</span> <span class="op">*</span> nstd <span class="op">*</span> sigma_marg(<span class="dv">0</span>)</span>
+<span id="cb45-36"><a href="#cb45-36" aria-hidden="true" tabindex="-1"></a>    s2 <span class="op">=</span> <span class="fl">1.5</span> <span class="op">*</span> nstd <span class="op">*</span> sigma_marg(<span class="dv">1</span>)</span>
+<span id="cb45-37"><a href="#cb45-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-38"><a href="#cb45-38" aria-hidden="true" tabindex="-1"></a>    ax.axhline(pos[<span class="dv">1</span>], color<span class="op">=</span><span class="st">'blue'</span>)</span>
+<span id="cb45-39"><a href="#cb45-39" aria-hidden="true" tabindex="-1"></a>    ax.axvline(pos[<span class="dv">0</span>], color<span class="op">=</span><span class="st">'blue'</span>)</span>
+<span id="cb45-40"><a href="#cb45-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-41"><a href="#cb45-41" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(pos[<span class="dv">0</span>] <span class="op">-</span> s1, pos[<span class="dv">0</span>] <span class="op">+</span> s1)</span>
+<span id="cb45-42"><a href="#cb45-42" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(pos[<span class="dv">1</span>] <span class="op">-</span> s2, pos[<span class="dv">1</span>] <span class="op">+</span> s2)</span>
+<span id="cb45-43"><a href="#cb45-43" aria-hidden="true" tabindex="-1"></a>    plt.draw()</span>
+<span id="cb45-44"><a href="#cb45-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ellip</span>
+<span id="cb45-45"><a href="#cb45-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-46"><a href="#cb45-46" aria-hidden="true" tabindex="-1"></a><span class="co">###################################################################</span></span>
+<span id="cb45-47"><a href="#cb45-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-48"><a href="#cb45-48" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_fisher_grid_aligned(param_names, param_fiducial, fisher_matrix_6x6):</span>
+<span id="cb45-49"><a href="#cb45-49" aria-hidden="true" tabindex="-1"></a>    n_params <span class="op">=</span> <span class="bu">len</span>(param_names)</span>
+<span id="cb45-50"><a href="#cb45-50" aria-hidden="true" tabindex="-1"></a>    fig, axes <span class="op">=</span> plt.subplots(nrows<span class="op">=</span>n_params, ncols<span class="op">=</span>n_params, figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">14</span>), sharex<span class="op">=</span><span class="st">'col'</span>, sharey<span class="op">=</span><span class="st">'row'</span>)</span>
+<span id="cb45-51"><a href="#cb45-51" aria-hidden="true" tabindex="-1"></a>    fig.subplots_adjust(top<span class="op">=</span><span class="fl">0.9</span>, right<span class="op">=</span><span class="fl">0.9</span>, left<span class="op">=</span><span class="fl">0.0</span>, bottom<span class="op">=</span><span class="fl">0.0</span>, hspace<span class="op">=</span><span class="fl">0.01</span>, wspace<span class="op">=</span><span class="fl">0.01</span>)</span>
+<span id="cb45-52"><a href="#cb45-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-53"><a href="#cb45-53" aria-hidden="true" tabindex="-1"></a>    neg_fmat <span class="op">=</span> <span class="op">-</span>fisher_matrix_6x6</span>
+<span id="cb45-54"><a href="#cb45-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-55"><a href="#cb45-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_params):</span>
+<span id="cb45-56"><a href="#cb45-56" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(n_params):</span>
+<span id="cb45-57"><a href="#cb45-57" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> i <span class="op">&gt;</span> j:</span>
+<span id="cb45-58"><a href="#cb45-58" aria-hidden="true" tabindex="-1"></a>                ax <span class="op">=</span> axes[i, j]</span>
+<span id="cb45-59"><a href="#cb45-59" aria-hidden="true" tabindex="-1"></a>                param_duo <span class="op">=</span> np.array([param_fiducial[j], param_fiducial[i]])</span>
+<span id="cb45-60"><a href="#cb45-60" aria-hidden="true" tabindex="-1"></a>                fish2x2 <span class="op">=</span> np.array([[neg_fmat[j, j], neg_fmat[j, i]], [neg_fmat[i, j], neg_fmat[i, i]]])</span>
+<span id="cb45-61"><a href="#cb45-61" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb45-62"><a href="#cb45-62" aria-hidden="true" tabindex="-1"></a>                plot_contours(fish2x2, param_duo, nstd<span class="op">=</span><span class="fl">1.</span>, ax<span class="op">=</span>ax, alpha<span class="op">=</span><span class="fl">0.4</span>, fill<span class="op">=</span><span class="va">True</span>, edgecolor<span class="op">=</span><span class="st">'red'</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb45-63"><a href="#cb45-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-64"><a href="#cb45-64" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> j <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb45-65"><a href="#cb45-65" aria-hidden="true" tabindex="-1"></a>                    ax.set_ylabel(param_names[i], fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb45-66"><a href="#cb45-66" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> i <span class="op">==</span> n_params <span class="op">-</span> <span class="dv">1</span>:</span>
+<span id="cb45-67"><a href="#cb45-67" aria-hidden="true" tabindex="-1"></a>                    ax.set_xlabel(param_names[j], fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb45-68"><a href="#cb45-68" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb45-69"><a href="#cb45-69" aria-hidden="true" tabindex="-1"></a>                axes[i, j].axis(<span class="st">'off'</span>)</span>
+<span id="cb45-70"><a href="#cb45-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-71"><a href="#cb45-71" aria-hidden="true" tabindex="-1"></a>    fig.tight_layout()</span>
+<span id="cb45-72"><a href="#cb45-72" aria-hidden="true" tabindex="-1"></a>    fig.show()</span>
+<span id="cb45-73"><a href="#cb45-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-74"><a href="#cb45-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-75"><a href="#cb45-75" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_fisher_grid_multiple(param_names, param_fiducial, fisher_matrices, matrix_labels):</span>
+<span id="cb45-76"><a href="#cb45-76" aria-hidden="true" tabindex="-1"></a>    n_params <span class="op">=</span> <span class="bu">len</span>(param_names)</span>
+<span id="cb45-77"><a href="#cb45-77" aria-hidden="true" tabindex="-1"></a>    n_matrices <span class="op">=</span> <span class="bu">len</span>(fisher_matrices)</span>
+<span id="cb45-78"><a href="#cb45-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-79"><a href="#cb45-79" aria-hidden="true" tabindex="-1"></a>    fig, axes <span class="op">=</span> plt.subplots(nrows<span class="op">=</span>n_params, ncols<span class="op">=</span>n_params, figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">14</span>), sharex<span class="op">=</span><span class="st">'col'</span>, sharey<span class="op">=</span><span class="st">'row'</span>)</span>
+<span id="cb45-80"><a href="#cb45-80" aria-hidden="true" tabindex="-1"></a>    plt.subplots_adjust(top<span class="op">=</span><span class="fl">0.90</span>, right<span class="op">=</span><span class="fl">0.85</span>, left<span class="op">=</span><span class="fl">0.08</span>, bottom<span class="op">=</span><span class="fl">0.08</span>, hspace<span class="op">=</span><span class="fl">0.4</span>, wspace<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb45-81"><a href="#cb45-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-82"><a href="#cb45-82" aria-hidden="true" tabindex="-1"></a>    colors <span class="op">=</span> [<span class="st">'red'</span>, <span class="st">'blue'</span>, <span class="st">'green'</span>, <span class="st">'purple'</span>]  <span class="co"># Adjust as needed</span></span>
+<span id="cb45-83"><a href="#cb45-83" aria-hidden="true" tabindex="-1"></a>    legend_handles <span class="op">=</span> []</span>
+<span id="cb45-84"><a href="#cb45-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-85"><a href="#cb45-85" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_params):</span>
+<span id="cb45-86"><a href="#cb45-86" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(n_params):</span>
+<span id="cb45-87"><a href="#cb45-87" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> i <span class="op">&gt;</span> j:</span>
+<span id="cb45-88"><a href="#cb45-88" aria-hidden="true" tabindex="-1"></a>                ax <span class="op">=</span> axes[i, j]</span>
+<span id="cb45-89"><a href="#cb45-89" aria-hidden="true" tabindex="-1"></a>                param_duo <span class="op">=</span> np.array([param_fiducial[j], param_fiducial[i]])</span>
+<span id="cb45-90"><a href="#cb45-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-91"><a href="#cb45-91" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Plot ellipses for each Fisher matrix</span></span>
+<span id="cb45-92"><a href="#cb45-92" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> k, (fisher_matrix, label) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(fisher_matrices, matrix_labels)):</span>
+<span id="cb45-93"><a href="#cb45-93" aria-hidden="true" tabindex="-1"></a>                    neg_fmat <span class="op">=</span> <span class="op">-</span>fisher_matrix</span>
+<span id="cb45-94"><a href="#cb45-94" aria-hidden="true" tabindex="-1"></a>                    fish2x2 <span class="op">=</span> np.array([[neg_fmat[j, j], neg_fmat[j, i]], </span>
+<span id="cb45-95"><a href="#cb45-95" aria-hidden="true" tabindex="-1"></a>                                        [neg_fmat[i, j], neg_fmat[i, i]]])</span>
+<span id="cb45-96"><a href="#cb45-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-97"><a href="#cb45-97" aria-hidden="true" tabindex="-1"></a>                    ellip <span class="op">=</span> plot_contours(fish2x2, param_duo, nstd<span class="op">=</span><span class="fl">1.</span>, ax<span class="op">=</span>ax, </span>
+<span id="cb45-98"><a href="#cb45-98" aria-hidden="true" tabindex="-1"></a>                                          alpha<span class="op">=</span><span class="fl">0.3</span>, fill<span class="op">=</span><span class="va">True</span>, edgecolor<span class="op">=</span>colors[k], </span>
+<span id="cb45-99"><a href="#cb45-99" aria-hidden="true" tabindex="-1"></a>                                          linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb45-100"><a href="#cb45-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-101"><a href="#cb45-101" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> i <span class="op">==</span> n_params <span class="op">-</span> <span class="dv">1</span> <span class="kw">and</span> j <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb45-102"><a href="#cb45-102" aria-hidden="true" tabindex="-1"></a>                        legend_handles.append((ellip, label))  <span class="co"># Collect handles and labels</span></span>
+<span id="cb45-103"><a href="#cb45-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-104"><a href="#cb45-104" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> j <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb45-105"><a href="#cb45-105" aria-hidden="true" tabindex="-1"></a>                    ax.set_ylabel(param_names[i], fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb45-106"><a href="#cb45-106" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> i <span class="op">==</span> n_params <span class="op">-</span> <span class="dv">1</span>:</span>
+<span id="cb45-107"><a href="#cb45-107" aria-hidden="true" tabindex="-1"></a>                    ax.set_xlabel(param_names[j], fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb45-108"><a href="#cb45-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-109"><a href="#cb45-109" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb45-110"><a href="#cb45-110" aria-hidden="true" tabindex="-1"></a>                axes[i, j].axis(<span class="st">'off'</span>)</span>
+<span id="cb45-111"><a href="#cb45-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-112"><a href="#cb45-112" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a single legend outside the plot</span></span>
+<span id="cb45-113"><a href="#cb45-113" aria-hidden="true" tabindex="-1"></a>    <span class="co"># fig.legend(*zip(*legend_handles), loc='center right', fontsize=10)</span></span>
+<span id="cb45-114"><a href="#cb45-114" aria-hidden="true" tabindex="-1"></a>    fig.legend(<span class="op">*</span><span class="bu">zip</span>(<span class="op">*</span>legend_handles), loc<span class="op">=</span><span class="st">'center'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, </span>
+<span id="cb45-115"><a href="#cb45-115" aria-hidden="true" tabindex="-1"></a>               bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="fl">0.7</span>), ncol<span class="op">=</span><span class="dv">1</span>, frameon<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb45-116"><a href="#cb45-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-117"><a href="#cb45-117" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb45-118"><a href="#cb45-118" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-52" class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>plot_fisher_grid_aligned(p_names, param_fiducial, fmat_fid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-32-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-53" class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Different redshifts</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-54" class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>redshift_fid <span class="op">=</span> <span class="fl">0.9</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>param_fid <span class="op">=</span> np.array([<span class="fl">0.13844</span>, <span class="fl">0.6991</span>, <span class="fl">0.7997</span>, <span class="fl">3.530</span>, <span class="fl">0.0993</span>, <span class="fl">2.72</span>])</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> computs_fisher_mat(redshift_fid):</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>    pk_fid, pk_error_fid <span class="op">=</span> power_spectra(param_fid, redshift_fid)</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>    derivs, pk_up, pk_down <span class="op">=</span> deriv(param_fid, redshift_fid)</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>    k_values <span class="op">=</span> np.log10(k_all)</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>    fisher <span class="op">=</span> FisherMatrix(k_values, pk_fid, pk_error_fid, param_fid)</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>    fmat_fid <span class="op">=</span> fisher.compute_fmat(derivs)</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>    fish_all <span class="op">=</span> np.array(_2x2_matrices(<span class="op">-</span>fmat_fid))</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> fmat_fid</span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>param_fid <span class="op">=</span> np.array([<span class="fl">0.13844</span>, <span class="fl">0.6991</span>, <span class="fl">0.7997</span>, <span class="fl">3.530</span>, <span class="fl">0.0993</span>, <span class="fl">2.72</span>])</span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>fmat_fid_z01 <span class="op">=</span> computs_fisher_mat(redshift_fid <span class="op">=</span> <span class="fl">0.01</span>)</span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>fmat_fid_z05 <span class="op">=</span> computs_fisher_mat(redshift_fid <span class="op">=</span> <span class="fl">0.25</span>)</span>
+<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a>fmat_fid_z10 <span class="op">=</span> computs_fisher_mat(redshift_fid <span class="op">=</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-55" class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage:</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>fisher_matrices <span class="op">=</span> [fmat_fid_z01, fmat_fid_z05, fmat_fid_z10] </span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>matrix_labels <span class="op">=</span> [<span class="vs">r'$z=0.01$'</span>, <span class="vs">r'$z=0.25$'</span>, <span class="vs">r'$z=0.5$'</span>]</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>plot_fisher_grid_multiple(p_names, param_fiducial, fisher_matrices, matrix_labels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-35-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/nesar\.github\.io\/EarlyDarkEmu");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nesar/EarlyDarkEmu/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
