@@ -93,7 +93,7 @@ def load_wmap(fileIn:str=WMAP_FILE, #Input file
 def load_lya(fileIn:str=LYA_FILE, #Input file
             ):
     k, pk, pk_error = np.loadtxt(fileIn).T
-    return k, np.log10(pk), ((pk_error-pk)/pk)
+    return k, np.log10(pk), ((pk_error)/pk)
 
 # %% ../nbs/00_load.ipynb 19
 def load_planck_ee(fileIn:str=PLANCKEE_FILE, #Input file
